@@ -8,7 +8,7 @@ int roll4d6DropLowest(std::mt19937& rng) {
     std::uniform_int_distribution<int> d6(1, 6);
     std::array<int, 4> rolls = { d6(rng), d6(rng), d6(rng), d6(rng) };
     std::sort(rolls.begin(), rolls.end());
-    return rolls + rolls + rolls;
+    return rolls[1] + rolls[2] + rolls[3];
 }
 
 int getModifier(int score) {
@@ -73,22 +73,25 @@ void applyClassDetails(Character& c) {
     c.hp = std::max(1, hitDie + conMod);
 }
 
-Character createCharacter(const std::string& name, CharacterClass chosenClass, std::mt19937& rng) {
+Character createCharacter(const std::string& name, CharacterRace chosenRace, CharacterClass chosenClass, std::mt19937& rng) {
     Character c;
     c.name = name.empty() ? "Adventurer" : name;
+    c.race = chosenRace;
     c.charClass = chosenClass;
 
     for (int i = 0; i < ABILITY_COUNT; ++i) {
         c.scores[i] = roll4d6DropLowest(rng);
     }
 
+    // Apply racial bonuses before class HP so a Dwarf's +2 CON boosts starting HP
+    applyRaceBonuses(c.race, c.scores);
     applyClassDetails(c);
     return c;
 }
 
 void printSheet(const Character& c) {
     const std::array<std::string, 6> labels = { "STR", "DEX", "CON", "INT", "WIS", "CHA" };
-    std::cout << "\n=== " << c.name << " (" << getClassName(c.charClass) << ") ===\n";
+    std::cout << "\n=== " << c.name << " (" << getRaceName(c.race) << " " << getClassName(c.charClass) << ") ===\n";
     std::cout << "HP: " << c.hp << "\n";
 
     for (int i = 0; i < ABILITY_COUNT; ++i) {

@@ -1,10 +1,10 @@
 #pragma once
+#include "Race.h"
+#include "Stats.h"
 #include <array>
 #include <random>
 #include <string>
 #include <vector>
-
-enum Ability { STR = 0, DEX, CON, INT, WIS, CHA, ABILITY_COUNT };
 
 enum class CharacterClass {
     Barbarian = 1,
@@ -15,6 +15,7 @@ enum class CharacterClass {
 
 struct Character {
     std::string name;
+    CharacterRace race = CharacterRace::Human;
     CharacterClass charClass = CharacterClass::Fighter;
     std::array<int, ABILITY_COUNT> scores{};
     int hp = 10;
@@ -26,5 +27,5 @@ int getModifier(int score);
 std::string getClassName(CharacterClass cClass);
 CharacterClass chooseClass();
 void applyClassDetails(Character& c);
-Character createCharacter(const std::string& name, CharacterClass chosenClass, std::mt19937& rng);
+Character createCharacter(const std::string& name, CharacterRace chosenRace, CharacterClass chosenClass, std::mt19937& rng);
 void printSheet(const Character& c);

@@ -2,6 +2,7 @@
 //
 
 #include "Class.h"
+#include "Race.h"
 #include <iostream>
 #include <random>
 #include <string>
@@ -14,8 +15,9 @@ int main() {
     std::cout << "Enter character name: ";
     std::getline(std::cin, name);
 
+    CharacterRace selectedRace = chooseRace();
     CharacterClass selectedClass = chooseClass();
-    Character hero = createCharacter(name, selectedClass, rng);
+    Character hero = createCharacter(name, selectedRace, selectedClass, rng);
 
     printSheet(hero);
     return 0;
